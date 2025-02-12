@@ -7,19 +7,16 @@ from PIL import Image
 import os
 import gdown
 
-# URL Google Drive untuk state_dict (GANTI dengan ID model yang baru)
 url = "https://drive.google.com/uc?id=1J4Vsp_s9sg9Ii3_ioDExDo_ST3LjVYeZ"
 model_path = "model_resnet18_state_dict.pth"
 
-# Fungsi untuk mendownload model jika belum ada
 def download_model():
     if not os.path.exists(model_path):
         st.info("🔄 Mengunduh model, harap tunggu...")
         gdown.download(url, model_path, quiet=False)
 
-# Kelas Model ResNet18 Kustom
 class CustomResNet18(nn.Module):
-    def __init__(self, num_classes=4):  # Pastikan jumlah kelas sama
+    def __init__(self, num_classes=4):  
         super(CustomResNet18, self).__init__()
         self.resnet = models.resnet18(pretrained=False)
         num_ftrs = self.resnet.fc.in_features
@@ -28,31 +25,26 @@ class CustomResNet18(nn.Module):
     def forward(self, x):
         return self.resnet(x)
 
-# Load model dengan state_dict
 def load_model():
     download_model()
-    model = CustomResNet18(num_classes=4)  # Pastikan jumlah kelas sama dengan saat training
+    model = CustomResNet18(num_classes=4)  
     model.load_state_dict(torch.load(model_path, map_location=torch.device("cpu")))
-    model.eval()  # Mode evaluasi
+    model.eval() 
     return model
 
-# Pastikan model terload
 st.write("🔍 Memuat model...")
 model = load_model()
 
-# Label Kelas
 class_names = ['Glioma_tumor', 'Meningioma_tumor', 'No_tumor', 'Pituitary_tumor']
 
-# Transformasi gambar
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 
-# Fungsi Prediksi
 def predict_image(image):
-    image = transform(image).unsqueeze(0)  # Preprocessing
+    image = transform(image).unsqueeze(0)  
     with torch.no_grad():
         outputs = model(image)
         probabilities = torch.nn.functional.softmax(outputs, dim=1)
@@ -60,7 +52,6 @@ def predict_image(image):
 
     return class_names[predicted.item()], confidence.item()
 
-# Streamlit UI
 st.title("🧠 Klasifikasi MRI Tumor Otak dengan ResNet18")
 st.write("Unggah gambar MRI untuk diklasifikasikan.")
 
@@ -75,7 +66,6 @@ if uploaded_file is not None:
         st.success(f"✅ Hasil Prediksi: **{label}**")
         st.info(f"📊 Confidence: **{conf:.2f}**")
 
-# Tambahkan footer nama
 st.markdown(
     """
     <style>
@@ -86,7 +76,7 @@ st.markdown(
             font-size: 12px;
             color: gray;
         </style>
-    <div class="footer">🚀 Dibuat oleh Nama Kamu</div>
-    """,
+    <div class="footer">@ <b>Frederick Huisand S</b>
+    </div>""",
     unsafe_allow_html=True
 )
