@@ -42,3 +42,24 @@ if uploaded_file is not None:
     if st.button("Prediksi"):
         label, conf = predict_image(image)
         st.success(f"Hasil Prediksi: **{label}** dengan confidence **{conf:.2f}**")
+st.markdown(
+    """
+    <style>
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: transparent;
+        color: grey;
+        text-align: left;
+        padding: 10px;
+        font-size: 14px;
+    }
+    </style>
+    <div class="footer">
+        🚀 Dibuat oleh <b>Frederick Huisand S</b>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
