@@ -13,9 +13,16 @@ import cv2
 from PIL import Image
 from tensorflow.keras.models import load_model
 
-url = "https://drive.google.com/uc?id=1-bHVMdUQDmPVLcd8-eQlSJMF6-zUPTFU"
-model = load_model('/content/drive/MyDrive/SKRIPSI/Dataset/model.h5')
+url = "https://drive.google.com/uc?id=1aBcD_EFGhijklMNOpQrS"
+output = "model.h5"
 
+@st.cache_resource  # Cache model agar tidak di-download berulang kali
+def load_trained_model():
+    gdown.download(url, output, quiet=False)  # Download dari Google Drive
+    return load_model(output)
+
+# Load Model
+model = load_trained_model()
 class_names = ['Glioma_tumor', 'Meningioma_tumor', 'No_tumor', 'Pituitary_tumor']  
 
 def predict_image(image):
