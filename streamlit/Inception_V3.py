@@ -58,7 +58,7 @@ st.markdown(
     }
     </style>
     <div class="footer">
-        🚀 Dibuat oleh <b>Frederick Huisand S</b>
+        @ <b>Frederick Huisand S</b>
     </div>
     """,
     unsafe_allow_html=True
